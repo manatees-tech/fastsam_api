@@ -13,7 +13,10 @@ RUN --mount=type=cache,target=/root/.cache/pip,id=pip_fastsam_api \
     pip install --upgrade pip && \
     pip install -r requirements.txt
 
-COPY fastsam .
+COPY fastsam/ ./fastsam/
+COPY assets/ ./assets/
+COPY ultralytics/ ./ultralytics/
+COPY utils/ ./utils/
 COPY api.py .
 
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
