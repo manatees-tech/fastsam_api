@@ -1,14 +1,14 @@
 matplotlib==3.9.4
-opencv-python==4.11.0.86
+opencv-python==4.10.0.84
 pillow==11.1.0
 PyYAML==6.0.2
 requests==2.32.3
 scipy==1.13.1
-torch==2.4.0
-torchvision==0.20.1
+torch==2.4.1
+torchvision==0.19.1
 tqdm==4.67.1
 pandas==2.2.3
 seaborn==0.13.2
 gradio==3.35.2
 psutil==6.1.1
-git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1
+clip @ git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1
