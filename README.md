@@ -14,7 +14,7 @@ docker compose up
 
 ```
 curl -X POST "http://localhost:8021/segment" \
-     -H "X-API-Key: 123" \
+     -H "X-API-Key: hAdvzDhgwD9qh1ejsUF5aqNv9wGC3S6f" \
      -F "file=@images/dogs.jpg" \
      -F "prompt=a white dog" \
      -F "conf=0.4" \

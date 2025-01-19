@@ -7,11 +7,13 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY requirements-fastsam.txt .
+COPY requirements-api.txt .
 
 RUN --mount=type=cache,target=/root/.cache/pip,id=pip_fastsam_api \
     pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install -r requirements-fastsam.txt && \
+    pip install -r requirements-api.txt
 
 COPY fastsam/ ./fastsam/
 COPY assets/ ./assets/
