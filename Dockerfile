@@ -8,7 +8,10 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+
+RUN --mount=type=cache,target=/root/.cache/pip,id=pip_fastsam_api \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 COPY fastsam .
 COPY api.py .

@@ -1,0 +1,45 @@
+name: fastsam-api-image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Set Docker tags
+      id: tags
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "tags=${{ secrets.DOCKER_USERNAME }}/fastsam_api:pr-${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+        elif [ "${{ github.event_name }}" = "push" ]; then
+          echo "tags=${{ secrets.DOCKER_USERNAME }}/fastsam_api:latest,${{ secrets.DOCKER_USERNAME }}/fastsam_api:master" >> $GITHUB_OUTPUT
+        else
+          echo "tags=${{ secrets.DOCKER_USERNAME }}/fastsam_api:manual" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build base Docker image
+      uses: docker/build-push-action@v6 
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.tags.outputs.tags }}
+        cache-from: |
+          type=registry,ref=${{ secrets.DOCKER_USERNAME }}/fastsam_api:buildcache
+          type=registry,ref=${{ secrets.DOCKER_USERNAME }}/fastsam_api:latest
+        cache-to: |
+          type=registry,ref=${{ secrets.DOCKER_USERNAME }}/fastsam_api:buildcache,mode=max
+        platforms: linux/amd64
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
