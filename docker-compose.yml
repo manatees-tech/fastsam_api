@@ -1,0 +1,33 @@
+networks:
+  fastsam-network:
+    name: fastsam-network
+
+services:
+  fastsam-api:
+    container_name: fastsam-api
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8021:8000
+    env_file:
+      - .env
+    networks:
+      - fastsam-network
+
+  fastsam-minio:
+    container_name: fastsam-minio
+    image: minio/minio:latest
+    ports:
+      - 9021:9000
+      - 9022:9001
+    volumes:
+      - fastsam-minio-data:/data
+    env_file:
+      - .env
+    command: server /data --console-address ":9001"
+    networks:
+      - fastsam-network
+
+volumes:
+  fastsam-minio-data:

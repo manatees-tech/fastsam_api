@@ -7,3 +7,11 @@ weights
 build/
 *.egg-info/
 gradio_cached_examples
+.python-version
+.env
+output/
+temp_inputs/
+temp_outputs/
+assets/FastSAM-x.pt
+FastSAM-x.pt
+__pycache__/
