@@ -1,0 +1,9 @@
+services:
+  fastsam-api:
+    container_name: fastsam-api
+    image: ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}
+    pull_policy: always
+    ports:
+      - 8021:8000
+    env_file:
+      - .env

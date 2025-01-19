@@ -4,7 +4,8 @@ import uuid
 import uvicorn
 import boto3
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException, Security
+from fastapi.security.api_key import APIKeyHeader
 
 from fastsam import FastSAM, FastSAMPrompt
 
@@ -13,7 +14,6 @@ app = FastAPI()
 model = FastSAM('assets/FastSAM-x.pt')
 DEVICE = 'cpu'
 
-
 s3_client = boto3.client(
     's3',
     endpoint_url=os.getenv('MINIO_ENDPOINT'),
@@ -21,7 +21,20 @@ s3_client = boto3.client(
     aws_secret_access_key=os.getenv('MINIO_ROOT_PASSWORD'),
     verify=False
 )
+
 BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME')
+
+
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+async def get_api_key(api_key_header: str = Security(api_key_header)):
+    if not api_key_header or api_key_header != os.getenv('API_KEY'):
+        raise HTTPException(
+            status_code=403,
+            detail="Could not validate API key"
+        )
+    return api_key_header
 
 
 @app.post("/segment")
@@ -30,6 +43,7 @@ async def segment_image(
     prompt: str = "a white dog",
     conf: float = 0.4,
     iou: float = 0.9,
+    api_key: str = Security(get_api_key)
 ):
     os.makedirs("temp_inputs", exist_ok=True)
     os.makedirs("temp_outputs", exist_ok=True)
